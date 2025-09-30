@@ -9,7 +9,8 @@ class GetArticlesQuery
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository
-    ) {}
+    ) {
+    }
 
     public function execute(int $perPage = 15): LengthAwarePaginator
     {

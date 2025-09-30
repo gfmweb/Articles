@@ -52,7 +52,7 @@ class CreateUserActionTest extends TestCase
         );
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage(__('users.create.email_exists'));
+        $this->expectExceptionMessage(__('users::messages.email_exists'));
 
         $this->action->execute($dto);
     }

@@ -22,7 +22,7 @@ class CreateUserAction
         $existingUser = $this->userRepository->findByEmail($dto->email);
 
         if ($existingUser) {
-            throw new \Exception(__('users.create.email_exists'));
+            throw new \Exception(__('users::messages.email_exists'));
         }
 
         // Hash password

@@ -24,7 +24,7 @@ class UpdateUserAction
         $user = $this->userRepository->findById($dto->id);
 
         if (! $user) {
-            throw new \Exception(__('users.update.not_found'));
+            throw new \Exception(__('users::messages.not_found'));
         }
 
         // Check if email is being changed and if it already exists
@@ -32,7 +32,7 @@ class UpdateUserAction
             $existingUser = $this->userRepository->findByEmail($dto->email);
 
             if ($existingUser) {
-                throw new \Exception(__('users.update.email_exists'));
+                throw new \Exception(__('users::messages.email_exists'));
             }
         }
 

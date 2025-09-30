@@ -22,7 +22,7 @@ class DeleteUserAction
         $user = $this->userRepository->findById($userId);
 
         if (! $user) {
-            throw new \Exception(__('users.delete.not_found'));
+            throw new \Exception(__('users::messages.not_found'));
         }
 
         // Delete user

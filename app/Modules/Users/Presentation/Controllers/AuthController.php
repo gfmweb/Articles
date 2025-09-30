@@ -33,7 +33,7 @@ class AuthController
                 'user' => $user,
                 'token' => $token,
             ],
-            'message' => __('users.messages.registered'),
+            'message' => __('users::messages.registered'),
         ], 201);
     }
 
@@ -47,7 +47,7 @@ class AuthController
 
         if (! $user) {
             return response()->json([
-                'message' => __('users.messages.login_failed'),
+                'message' => __('users::messages.login_failed'),
             ], 401);
         }
 
@@ -58,7 +58,7 @@ class AuthController
                 'user' => $user,
                 'token' => $token,
             ],
-            'message' => __('users.messages.logged_in'),
+            'message' => __('users::messages.logged_in'),
         ]);
     }
 
@@ -70,7 +70,7 @@ class AuthController
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => __('users.messages.logged_out'),
+            'message' => __('users::messages.logged_out'),
         ]);
     }
 

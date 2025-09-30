@@ -71,7 +71,7 @@ class AuthControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => __('users.messages.logged_out'),
+                'message' => __('users::messages.logged_out'),
             ]);
     }
 
@@ -101,7 +101,7 @@ class AuthControllerTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson([
-                'message' => __('users.messages.login_failed'),
+                'message' => __('users::messages.login_failed'),
             ]);
     }
 

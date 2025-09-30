@@ -28,14 +28,12 @@ class UpdateArticleRequest extends FormRequest
     }
 
     /**
-     * Get custom messages for validator errors.
-     *
      * @return array<string, string>
      */
     public function messages(): array
     {
         return [
-            'title.max' => __('articles.validation.title_max'),
+            'title.max' => __('articles::validation.title_max'),
         ];
     }
 }

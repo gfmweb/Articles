@@ -9,7 +9,8 @@ class GetArticleQuery
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository
-    ) {}
+    ) {
+    }
 
     public function execute(int $id): ?Article
     {

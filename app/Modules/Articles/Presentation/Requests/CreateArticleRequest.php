@@ -30,18 +30,16 @@ class CreateArticleRequest extends FormRequest
     }
 
     /**
-     * Get custom messages for validator errors.
-     *
      * @return array<string, string>
      */
     public function messages(): array
     {
         return [
-            'title.required' => __('articles.validation.title_required'),
-            'title.max' => __('articles.validation.title_max'),
-            'content.required' => __('articles.validation.content_required'),
-            'author_id.required' => __('articles.validation.author_required'),
-            'author_id.exists' => __('articles.validation.author_exists'),
+            'title.required' => __('articles::validation.title_required'),
+            'title.max' => __('articles::validation.title_max'),
+            'content.required' => __('articles::validation.content_required'),
+            'author_id.required' => __('articles::validation.author_required'),
+            'author_id.exists' => __('articles::validation.author_exists'),
         ];
     }
 }

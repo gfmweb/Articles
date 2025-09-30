@@ -106,7 +106,7 @@ class ArticleControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => __('articles.messages.deleted'),
+                'message' => __('articles::messages.deleted'),
             ]);
 
         $this->assertDatabaseMissing('articles', ['id' => $article->id]);

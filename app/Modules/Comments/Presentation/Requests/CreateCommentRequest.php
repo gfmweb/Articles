@@ -36,9 +36,9 @@ class CreateCommentRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'text.required' => __('comments.validation.text_required'),
-            'author_id.required' => __('comments.validation.author_required'),
-            'author_id.exists' => __('comments.validation.author_exists'),
+            'text.required' => __('comments::validation.text_required'),
+            'author_id.required' => __('comments::validation.author_required'),
+            'author_id.exists' => __('comments::validation.author_exists'),
         ];
     }
 }

@@ -15,7 +15,7 @@ class NoHtmlTags implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (is_string($value) && strip_tags($value) !== $value) {
-            $fail('Поле :attribute не должно содержать HTML теги.');
+            $fail(__('articles::validation.no_html_tags'));
         }
     }
 }

@@ -8,7 +8,9 @@ class CreateArticleDTO
         public readonly string $title,
         public readonly string $content,
         public readonly int $author_id
-    ) {}
+    ) {
+    }
+
 
     public static function fromArray(array $data): self
     {

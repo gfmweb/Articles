@@ -36,14 +36,14 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => __('users.validation.name_required'),
-            'name.max' => __('users.validation.name_max'),
-            'email.required' => __('users.validation.email_required'),
-            'email.email' => __('users.validation.email_email'),
-            'email.unique' => __('users.validation.email_unique'),
-            'password.required' => __('users.validation.password_required'),
-            'password.min' => __('users.validation.password_min'),
-            'password.confirmed' => __('users.validation.password_confirmed'),
+            'name.required' => __('users::validation.name_required'),
+            'name.max' => __('users::validation.name_max'),
+            'email.required' => __('users::validation.email_required'),
+            'email.email' => __('users::validation.email_email'),
+            'email.unique' => __('users::validation.email_unique'),
+            'password.required' => __('users::validation.password_required'),
+            'password.min' => __('users::validation.password_min'),
+            'password.confirmed' => __('users::validation.password_confirmed'),
         ];
     }
 }

@@ -152,7 +152,7 @@ class SecurityTest extends TestCase
         $response->assertStatus(429)
             ->assertJsonStructure(['message', 'retry_after'])
             ->assertJson([
-                'message' => __('articles.messages.rate_limit_exceeded', ['seconds' => $response->json('retry_after')]),
+                'message' => __('articles::messages.rate_limit_exceeded', ['seconds' => $response->json('retry_after')]),
             ]);
     }
 
@@ -184,7 +184,7 @@ class SecurityTest extends TestCase
         $response->assertStatus(429)
             ->assertJsonStructure(['message', 'retry_after'])
             ->assertJson([
-                'message' => __('comments.messages.rate_limit_exceeded', ['seconds' => $response->json('retry_after')]),
+                'message' => __('comments::messages.rate_limit_exceeded', ['seconds' => $response->json('retry_after')]),
             ]);
     }
 }

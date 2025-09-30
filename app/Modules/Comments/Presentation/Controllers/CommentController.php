@@ -28,7 +28,7 @@ class CommentController
 
         return response()->json([
             'data' => $comment->load(['author']),
-            'message' => __('comments.messages.created'),
+            'message' => __('comments::messages.created'),
         ], 201);
     }
 
@@ -43,7 +43,7 @@ class CommentController
         $this->deleteCommentAction->execute($comment);
 
         return response()->json([
-            'message' => __('comments.messages.deleted'),
+            'message' => __('comments::messages.deleted'),
         ]);
     }
 }

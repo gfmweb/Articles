@@ -56,7 +56,7 @@ class CommentControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => __('comments.messages.deleted'),
+                'message' => __('comments::messages.deleted'),
             ]);
 
         $this->assertDatabaseMissing('comments', ['id' => $comment->id]);

@@ -13,12 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'article.owner' => \App\Http\Middleware\CheckArticleOwnership::class,
-            'comment.owner' => \App\Http\Middleware\CheckCommentOwnership::class,
-            'throttle.auth' => \App\Http\Middleware\ThrottleAuth::class,
-            'throttle.article' => \App\Http\Middleware\ThrottleArticleCreation::class,
-            'throttle.comment' => \App\Http\Middleware\ThrottleCommentCreation::class,
-            'security.log' => \App\Http\Middleware\SecurityLogging::class,
+            'article.owner' => \App\Modules\Articles\Presentation\Middlewares\CheckArticleOwnership::class,
+            'comment.owner' => \App\Modules\Comments\Presentation\Middlewares\CheckCommentOwnership::class,
+            'throttle.auth' => \App\Modules\Users\Presentation\Middlewares\ThrottleAuth::class,
+            'throttle.article' => \App\Modules\Articles\Presentation\Middlewares\ThrottleArticleCreation::class,
+            'throttle.comment' => \App\Modules\Comments\Presentation\Middlewares\ThrottleCommentCreation::class,
+            'security.log' => \App\Modules\Security\Presentation\Middlewares\SecurityLogging::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

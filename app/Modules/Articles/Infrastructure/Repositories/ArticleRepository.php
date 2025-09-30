@@ -6,12 +6,15 @@ use App\Modules\Articles\Persistence\Interfaces\ArticleRepositoryInterface;
 use App\Modules\Articles\Persistence\ORM\Article;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
     public function create(array $data): Article
     {
-        return Article::create($data);
+        return DB::transaction(function () use ($data) {
+            return Article::create($data);
+        });
     }
 
     public function findById(int $id): ?Article
@@ -21,26 +24,38 @@ class ArticleRepository implements ArticleRepositoryInterface
 
     public function findByIdWithComments(int $id): ?Article
     {
-        return Article::with(['comments.author', 'author'])->find($id);
+        return Article::with(['comments.author', 'author'])
+            ->withCount('comments')
+            ->find($id);
     }
 
     public function getAllPaginated(int $perPage = 15, ?int $userId = null): LengthAwarePaginator
     {
-        $query = Article::with(['author', 'comments'])
+        $query = Article::query()
+            ->with(['author'])
             ->withCount('comments')
             ->orderBy('created_at', 'desc');
 
+        // Добавляем вычисляемые поля для подсветки через SQL (эффективнее, чем загружать все комментарии)
+        if ($userId) {
+            $query->addSelect(['articles.*'])
+                ->selectRaw('(author_id = ?) as is_author', [$userId])
+                ->selectRaw(
+                    'EXISTS(SELECT 1 FROM comments WHERE comments.article_id = articles.id AND comments.author_id = ?) as has_commented',
+                    [$userId]
+                );
+        } else {
+            $query->select('articles.*');
+        }
+
         $paginator = $query->paginate($perPage);
 
-        // Добавляем поля подсветки
+        // Устанавливаем вычисленные значения в атрибуты для правильной работы accessors
         if ($userId) {
-            $paginator->getCollection()->each(function ($article) use ($userId) {
-                $isAuthor = $article->author_id === $userId;
-                $hasCommented = $article->comments->where('author_id', $userId)->isNotEmpty();
-
-                // Используем setAttribute для установки значений
-                $article->setAttribute('is_author', $isAuthor);
-                $article->setAttribute('has_commented', $hasCommented);
+            $paginator->getCollection()->each(function ($article) {
+                // Преобразуем значения из БД в boolean
+                $article->setAttribute('is_author', (bool) $article->getRawOriginal('is_author'));
+                $article->setAttribute('has_commented', (bool) $article->getRawOriginal('has_commented'));
             });
         }
 
@@ -60,13 +75,17 @@ class ArticleRepository implements ArticleRepositoryInterface
 
     public function update(Article $article, array $data): Article
     {
-        $article->update($data);
+        return DB::transaction(function () use ($article, $data) {
+            $article->update($data);
 
-        return $article->fresh();
+            return $article->fresh();
+        });
     }
 
     public function delete(Article $article): bool
     {
-        return $article->delete();
+        return DB::transaction(function () use ($article) {
+            return $article->delete();
+        });
     }
 }

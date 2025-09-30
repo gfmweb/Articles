@@ -35,17 +35,6 @@ readonly class ArticleController
         $perPage = $request->get('per_page', 15);
         $userId = $request->user()?->id;
 
-        // Если пользователь не аутентифицирован через middleware, попробуем получить из токена
-        if (!$userId && $request->bearerToken()) {
-            try {
-                $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
-                $userId = $user?->id;
-            } catch (\Exception $e) {
-                // Игнорируем ошибки
-            }
-        }
-
-
         $articles = $this->getArticlesQuery->execute($perPage, $userId);
 
         return (new ArticleCollection($articles))
@@ -59,9 +48,8 @@ readonly class ArticleController
         $article = $this->createArticleAction->execute($dto);
         $article->load(['author']);
 
-        // Добавляем поля для подсветки
-        $article->setAttribute('is_author', true);
-        $article->setAttribute('has_commented', false);
+        // Добавляем поля для подсветки (пользователь всегда автор своей новой статьи)
+        $this->addHighlightFields($article, $request->user()->id);
 
         return (new ArticleResource($article))
             ->additional(['message' => __('articles::messages.created')])
@@ -83,25 +71,19 @@ readonly class ArticleController
     {
         $userId = $request->user()?->id;
 
-        // Если пользователь не аутентифицирован через middleware, попробуем получить из токена
-        if (!$userId && $request->bearerToken()) {
-            try {
-                $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
-                $userId = $user?->id;
-            } catch (\Exception $e) {
-                // Игнорируем ошибки
-            }
+        if (! $userId) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
         // Получаем статью по ID
         $article = $this->getArticleQuery->execute($id);
 
-        if (!$article) {
+        if (! $article) {
             return response()->json(['message' => 'Article not found.'], 404);
         }
 
-        // Проверяем, что пользователь авторизован и является автором статьи
-        if (!$userId || $article->author_id !== $userId) {
+        // Проверяем, что пользователь является автором статьи
+        if ($article->author_id !== $userId) {
             return response()->json(['message' => 'This action is unauthorized.'], 403);
         }
 
@@ -110,8 +92,7 @@ readonly class ArticleController
         $updatedArticle->load(['author']);
 
         // Добавляем поля для подсветки
-        $updatedArticle->setAttribute('is_author', true);
-        $updatedArticle->setAttribute('has_commented', false);
+        $this->addHighlightFields($updatedArticle, $userId);
 
         return (new ArticleResource($updatedArticle))
             ->additional(['message' => __('articles::messages.updated')])
@@ -123,25 +104,19 @@ readonly class ArticleController
     {
         $userId = $request->user()?->id;
 
-        // Если пользователь не аутентифицирован через middleware, попробуем получить из токена
-        if (!$userId && $request->bearerToken()) {
-            try {
-                $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
-                $userId = $user?->id;
-            } catch (\Exception $e) {
-                // Игнорируем ошибки
-            }
+        if (! $userId) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
         // Получаем статью по ID
         $article = $this->getArticleQuery->execute($id);
 
-        if (!$article) {
+        if (! $article) {
             return response()->json(['message' => 'Article not found.'], 404);
         }
 
-        // Проверяем, что пользователь авторизован и является автором статьи
-        if (!$userId || $article->author_id !== $userId) {
+        // Проверяем, что пользователь является автором статьи
+        if ($article->author_id !== $userId) {
             return response()->json(['message' => 'This action is unauthorized.'], 403);
         }
 
@@ -150,5 +125,14 @@ readonly class ArticleController
         return response()->json([
             'message' => __('articles::messages.deleted'),
         ]);
+    }
+
+    /**
+     * Helper method to add highlight fields to article
+     */
+    private function addHighlightFields(Article $article, int $userId): void
+    {
+        $article->setAttribute('is_author', $article->author_id === $userId);
+        $article->setAttribute('has_commented', false);
     }
 }

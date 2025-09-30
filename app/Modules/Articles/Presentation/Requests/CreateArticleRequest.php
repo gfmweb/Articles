@@ -46,8 +46,10 @@ class CreateArticleRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'author_id' => $this->user()->id,
-        ]);
+        if ($user = $this->user()) {
+            $this->merge([
+                'author_id' => $user->id,
+            ]);
+        }
     }
 }

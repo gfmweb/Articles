@@ -72,15 +72,13 @@ class ArticleControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $article = Article::factory()->create(['author_id' => $user->id]);
-        $token = $user->createToken('test-token')->plainTextToken;
 
         $updateData = [
             'title' => 'Updated Title',
         ];
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->putJson("/api/articles/{$article->id}", $updateData);
+        $response = $this->actingAs($user, 'sanctum')
+            ->putJson("/api/articles/{$article->id}", $updateData);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -98,11 +96,9 @@ class ArticleControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $article = Article::factory()->create(['author_id' => $user->id]);
-        $token = $user->createToken('test-token')->plainTextToken;
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->deleteJson("/api/articles/{$article->id}");
+        $response = $this->actingAs($user, 'sanctum')
+            ->deleteJson("/api/articles/{$article->id}");
 
         $response->assertStatus(200)
             ->assertJson([
@@ -129,13 +125,11 @@ class ArticleControllerTest extends TestCase
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
         $article = Article::factory()->create(['author_id' => $user1->id]);
-        $token = $user2->createToken('test-token')->plainTextToken;
 
         $updateData = ['title' => 'Updated Title'];
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->putJson("/api/articles/{$article->id}", $updateData);
+        $response = $this->actingAs($user2, 'sanctum')
+            ->putJson("/api/articles/{$article->id}", $updateData);
 
         $response->assertStatus(403);
     }

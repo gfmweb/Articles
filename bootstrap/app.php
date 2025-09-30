@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle.article' => \App\Modules\Articles\Presentation\Middlewares\ThrottleArticleCreation::class,
             'throttle.comment' => \App\Modules\Comments\Presentation\Middlewares\ThrottleCommentCreation::class,
             'security.log' => \App\Modules\Security\Presentation\Middlewares\SecurityLogging::class,
+            'optional.auth' => \App\Http\Middleware\OptionalAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

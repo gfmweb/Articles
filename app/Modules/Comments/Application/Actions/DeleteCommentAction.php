@@ -5,7 +5,7 @@ namespace App\Modules\Comments\Application\Actions;
 use App\Modules\Comments\Persistence\Interfaces\CommentRepositoryInterface;
 use App\Modules\Comments\Persistence\ORM\Comment;
 
-class DeleteCommentAction
+readonly class DeleteCommentAction
 {
     public function __construct(
         private CommentRepositoryInterface $commentRepository

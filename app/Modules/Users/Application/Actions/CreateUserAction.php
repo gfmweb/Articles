@@ -7,29 +7,27 @@ use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Support\Facades\Hash;
 
-class CreateUserAction
+readonly class CreateUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
     ) {}
 
     /**
-     * Execute create user action
+     * @throws \Exception
      */
     public function execute(CreateUserDTO $dto): User
     {
-        // Check if user with email already exists
+
         $existingUser = $this->userRepository->findByEmail($dto->email);
 
         if ($existingUser) {
             throw new \Exception(__('users::messages.email_exists'));
         }
 
-        // Hash password
         $data = $dto->toArray();
         $data['password'] = Hash::make($data['password']);
 
-        // Create user
         return $this->userRepository->create($data);
     }
 }

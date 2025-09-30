@@ -7,7 +7,7 @@ use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Articles\Persistence\ORM\Article>
+ * @extends Factory<Article>
  */
 class ArticleFactory extends Factory
 {

@@ -3,14 +3,13 @@
 namespace App\Modules\Comments\Persistence\ORM;
 
 use App\Modules\Articles\Persistence\ORM\Article;
+use App\Modules\Comments\Persistence\Factories\CommentFactory;
 use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class Comment
- *
  * @property int $id
  * @property int $article_id
  * @property int $author_id
@@ -25,8 +24,6 @@ class Comment extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
@@ -36,8 +33,6 @@ class Comment extends Model
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -48,29 +43,18 @@ class Comment extends Model
         ];
     }
 
-    /**
-     * Get the article that owns the comment.
-     */
     public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
     }
 
-    /**
-     * Get the author that owns the comment.
-     */
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return \App\Modules\Comments\Persistence\Factories\CommentFactory
-     */
-    protected static function newFactory()
+    protected static function newFactory(): CommentFactory
     {
-        return \App\Modules\Comments\Persistence\Factories\CommentFactory::new();
+        return CommentFactory::new();
     }
 }

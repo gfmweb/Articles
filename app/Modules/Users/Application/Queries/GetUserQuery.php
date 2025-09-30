@@ -5,7 +5,7 @@ namespace App\Modules\Users\Application\Queries;
 use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 use App\Modules\Users\Persistence\ORM\User;
 
-class GetUserQuery
+readonly class GetUserQuery
 {
     public function __construct(
         private UserRepositoryInterface $userRepository

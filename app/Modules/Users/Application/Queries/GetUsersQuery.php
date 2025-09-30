@@ -6,7 +6,7 @@ use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-class GetUsersQuery
+readonly class GetUsersQuery
 {
     public function __construct(
         private UserRepositoryInterface $userRepository

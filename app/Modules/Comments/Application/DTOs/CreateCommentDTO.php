@@ -2,12 +2,12 @@
 
 namespace App\Modules\Comments\Application\DTOs;
 
-class CreateCommentDTO
+readonly class CreateCommentDTO
 {
     public function __construct(
-        public readonly int $article_id,
-        public readonly int $author_id,
-        public readonly string $text
+        public int $article_id,
+        public int $author_id,
+        public string $text
     ) {}
 
     public static function fromArray(array $data): self

@@ -2,10 +2,10 @@
 
 namespace App\Modules\Comments\Application\DTOs;
 
-class UpdateCommentDTO
+readonly class UpdateCommentDTO
 {
     public function __construct(
-        public readonly ?string $text = null
+        public ?string $text = null
     ) {}
 
     public static function fromArray(array $data): self

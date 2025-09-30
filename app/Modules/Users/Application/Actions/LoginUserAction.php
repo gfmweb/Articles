@@ -7,7 +7,7 @@ use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Support\Facades\Hash;
 
-class LoginUserAction
+readonly class LoginUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository

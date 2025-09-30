@@ -7,7 +7,7 @@ use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterUserAction
+readonly class RegisterUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
@@ -15,12 +15,10 @@ class RegisterUserAction
 
     public function execute(RegisterUserDTO $dto): User
     {
-        $user = $this->userRepository->create([
+        return $this->userRepository->create([
             'name' => $dto->name,
             'email' => $dto->email,
             'password' => Hash::make($dto->password),
         ]);
-
-        return $user;
     }
 }

@@ -6,7 +6,7 @@ use App\Modules\Comments\Application\DTOs\CreateCommentDTO;
 use App\Modules\Comments\Persistence\Interfaces\CommentRepositoryInterface;
 use App\Modules\Comments\Persistence\ORM\Comment;
 
-class CreateCommentAction
+readonly class CreateCommentAction
 {
     public function __construct(
         private CommentRepositoryInterface $commentRepository

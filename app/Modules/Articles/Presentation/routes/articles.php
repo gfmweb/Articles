@@ -3,7 +3,6 @@
 use App\Modules\Articles\Presentation\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::prefix('api')->group(function () {
     // Public routes
     Route::get('articles', [ArticleController::class, 'index']);

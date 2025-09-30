@@ -36,15 +36,14 @@ class CheckArticleOwnership
             ], 404);
         }
 
-        // User is guaranteed by auth:sanctum middleware
         $user = $request->user();
-
         if ($article->author_id !== $user->id) {
             return response()->json([
                 'message' => __('articles::messages.forbidden'),
             ], 403);
         }
         $request->merge(['article' => $article]);
+
         return $next($request);
     }
 }

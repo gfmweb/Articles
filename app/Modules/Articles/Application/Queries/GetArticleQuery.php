@@ -8,9 +8,8 @@ use App\Modules\Articles\Persistence\ORM\Article;
 class GetArticleQuery
 {
     public function __construct(
-        private ArticleRepositoryInterface $articleRepository
-    ) {
-    }
+        private readonly ArticleRepositoryInterface $articleRepository
+    ) {}
 
     public function execute(int $id): ?Article
     {

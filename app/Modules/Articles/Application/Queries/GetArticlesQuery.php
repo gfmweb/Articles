@@ -8,9 +8,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class GetArticlesQuery
 {
     public function __construct(
-        private ArticleRepositoryInterface $articleRepository
-    ) {
-    }
+        private readonly ArticleRepositoryInterface $articleRepository
+    ) {}
 
     public function execute(int $perPage = 15): LengthAwarePaginator
     {

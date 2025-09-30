@@ -13,7 +13,6 @@ use Illuminate\Support\ServiceProvider;
 
 class ArticlesServiceProvider extends ServiceProvider
 {
-
     public function register(): void
     {
         $this->app->bind(ArticleRepositoryInterface::class, ArticleRepository::class);
@@ -27,11 +26,11 @@ class ArticlesServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../Presentation/routes/articles.php');
+        $this->loadRoutesFrom(__DIR__.'/../Presentation/routes/articles.php');
 
         // Load translations
         $this->loadTranslationsFrom(
-            __DIR__ . '/../Persistence/resources/lang',
+            __DIR__.'/../Persistence/resources/lang',
             'articles'
         );
     }

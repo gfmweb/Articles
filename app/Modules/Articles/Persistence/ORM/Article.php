@@ -5,15 +5,13 @@ namespace App\Modules\Articles\Persistence\ORM;
 use App\Modules\Articles\Persistence\Factories\ArticleFactory;
 use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
- * Class Article
- *
  * @property int $id
  * @property string $title
  * @property string $content
@@ -52,15 +50,11 @@ class Article extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
-
     public function comments(): HasMany
     {
         return $this->hasMany(\App\Modules\Comments\Persistence\ORM\Comment::class);
     }
 
-    /**
-     * @return ArticleFactory
-     */
     protected static function newFactory(): ArticleFactory
     {
         return ArticleFactory::new();

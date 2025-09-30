@@ -10,8 +10,7 @@ class CreateArticleAction
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository
-    ) {
-    }
+    ) {}
 
     public function execute(CreateArticleDTO $dto): Article
     {

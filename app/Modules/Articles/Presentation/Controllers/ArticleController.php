@@ -22,9 +22,7 @@ readonly class ArticleController
         private CreateArticleAction $createArticleAction,
         private UpdateArticleAction $updateArticleAction,
         private DeleteArticleAction $deleteArticleAction
-    ) {
-    }
-
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -56,6 +54,7 @@ readonly class ArticleController
     public function show(int $id): JsonResponse
     {
         $article = $this->getArticleQuery->execute($id);
+
         return response()->json([
             'data' => $article,
         ]);

@@ -5,6 +5,7 @@ namespace App\Modules\Comments\Persistence\ORM;
 use App\Modules\Articles\Persistence\ORM\Article;
 use App\Modules\Comments\Persistence\Factories\CommentFactory;
 use App\Modules\Users\Persistence\ORM\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,8 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $article_id
  * @property int $author_id
  * @property string $text
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property-read Article $article
  * @property-read User $author
  */

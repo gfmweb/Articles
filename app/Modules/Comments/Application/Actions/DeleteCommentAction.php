@@ -9,7 +9,8 @@ readonly class DeleteCommentAction
 {
     public function __construct(
         private CommentRepositoryInterface $commentRepository
-    ) {}
+    ) {
+    }
 
     public function execute(Comment $comment): bool
     {

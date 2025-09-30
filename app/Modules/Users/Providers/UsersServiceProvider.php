@@ -22,13 +22,13 @@ class UsersServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
-        $this->app->singleton(CreateUserAction::class);
-        $this->app->singleton(UpdateUserAction::class);
-        $this->app->singleton(DeleteUserAction::class);
-        $this->app->singleton(RegisterUserAction::class);
-        $this->app->singleton(LoginUserAction::class);
-        $this->app->singleton(GetUserQuery::class);
-        $this->app->singleton(GetUsersQuery::class);
+        $this->app->bind(CreateUserAction::class);
+        $this->app->bind(UpdateUserAction::class);
+        $this->app->bind(DeleteUserAction::class);
+        $this->app->bind(RegisterUserAction::class);
+        $this->app->bind(LoginUserAction::class);
+        $this->app->bind(GetUserQuery::class);
+        $this->app->bind(GetUsersQuery::class);
     }
 
     /**

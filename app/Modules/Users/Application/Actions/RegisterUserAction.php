@@ -11,7 +11,8 @@ readonly class RegisterUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    ) {}
+    ) {
+    }
 
     public function execute(RegisterUserDTO $dto): User
     {

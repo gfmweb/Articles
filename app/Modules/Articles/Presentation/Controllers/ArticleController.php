@@ -28,7 +28,8 @@ readonly class ArticleController
         private CreateArticleAction $createArticleAction,
         private UpdateArticleAction $updateArticleAction,
         private DeleteArticleAction $deleteArticleAction
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): JsonResponse
     {
@@ -47,8 +48,6 @@ readonly class ArticleController
         $dto = CreateArticleDTO::fromArray($request->validated());
         $article = $this->createArticleAction->execute($dto);
         $article->load(['author']);
-
-        // Добавляем поля для подсветки (пользователь всегда автор своей новой статьи)
         $this->addHighlightFields($article, $request->user()->id);
 
         return (new ArticleResource($article))
@@ -72,26 +71,22 @@ readonly class ArticleController
         $userId = $request->user()?->id;
 
         if (! $userId) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => __('articles::messages.unauthenticated')], 401);
         }
 
-        // Получаем статью по ID
         $article = $this->getArticleQuery->execute($id);
 
         if (! $article) {
-            return response()->json(['message' => 'Article not found.'], 404);
+            return response()->json(['message' => __('articles::messages.not_found')], 404);
         }
 
-        // Проверяем, что пользователь является автором статьи
         if ($article->author_id !== $userId) {
-            return response()->json(['message' => 'This action is unauthorized.'], 403);
+            return response()->json(['message' => __('articles::messages.unauthorized')], 403);
         }
 
         $dto = UpdateArticleDTO::fromArray($request->validated());
         $updatedArticle = $this->updateArticleAction->execute($article, $dto);
         $updatedArticle->load(['author']);
-
-        // Добавляем поля для подсветки
         $this->addHighlightFields($updatedArticle, $userId);
 
         return (new ArticleResource($updatedArticle))
@@ -105,19 +100,16 @@ readonly class ArticleController
         $userId = $request->user()?->id;
 
         if (! $userId) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => __('articles::messages.unauthenticated')], 401);
         }
-
-        // Получаем статью по ID
         $article = $this->getArticleQuery->execute($id);
 
         if (! $article) {
-            return response()->json(['message' => 'Article not found.'], 404);
+            return response()->json(['message' => __('articles::messages.not_found')], 404);
         }
 
-        // Проверяем, что пользователь является автором статьи
         if ($article->author_id !== $userId) {
-            return response()->json(['message' => 'This action is unauthorized.'], 403);
+            return response()->json(['message' => __('articles::messages.unauthorized')], 403);
         }
 
         $this->deleteArticleAction->execute($article);
@@ -127,9 +119,6 @@ readonly class ArticleController
         ]);
     }
 
-    /**
-     * Helper method to add highlight fields to article
-     */
     private function addHighlightFields(Article $article, int $userId): void
     {
         $article->setAttribute('is_author', $article->author_id === $userId);

@@ -36,7 +36,6 @@ class ArticleRepository implements ArticleRepositoryInterface
             ->withCount('comments')
             ->orderBy('created_at', 'desc');
 
-        // Добавляем вычисляемые поля для подсветки через SQL (эффективнее, чем загружать все комментарии)
         if ($userId) {
             $query->addSelect(['articles.*'])
                 ->selectRaw('(author_id = ?) as is_author', [$userId])
@@ -50,10 +49,8 @@ class ArticleRepository implements ArticleRepositoryInterface
 
         $paginator = $query->paginate($perPage);
 
-        // Устанавливаем вычисленные значения в атрибуты для правильной работы accessors
         if ($userId) {
             $paginator->getCollection()->each(function ($article) {
-                // Преобразуем значения из БД в boolean
                 $article->setAttribute('is_author', (bool) $article->getRawOriginal('is_author'));
                 $article->setAttribute('has_commented', (bool) $article->getRawOriginal('has_commented'));
             });

@@ -12,7 +12,8 @@ readonly class CreateUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @throws UserAlreadyExistsException

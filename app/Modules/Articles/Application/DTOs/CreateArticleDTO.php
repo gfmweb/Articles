@@ -2,12 +2,12 @@
 
 namespace App\Modules\Articles\Application\DTOs;
 
-class CreateArticleDTO
+readonly class CreateArticleDTO
 {
     public function __construct(
-        public readonly string $title,
-        public readonly string $content,
-        public readonly int $author_id
+        public string $title,
+        public string $content,
+        public int $author_id
     ) {}
 
     public static function fromArray(array $data): self

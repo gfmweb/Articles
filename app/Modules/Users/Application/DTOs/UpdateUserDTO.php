@@ -9,11 +9,9 @@ readonly class UpdateUserDTO
         public ?string $name = null,
         public ?string $email = null,
         public ?string $password = null,
-    ) {}
+    ) {
+    }
 
-    /**
-     * Convert to array (only non-null values)
-     */
     public function toArray(): array
     {
         $data = [];
@@ -33,9 +31,6 @@ readonly class UpdateUserDTO
         return $data;
     }
 
-    /**
-     * Create from array
-     */
     public static function fromArray(array $data): self
     {
         return new self(

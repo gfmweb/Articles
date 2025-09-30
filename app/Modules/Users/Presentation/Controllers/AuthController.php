@@ -17,7 +17,8 @@ readonly class AuthController
     public function __construct(
         private RegisterUserAction $registerUserAction,
         private LoginUserAction $loginUserAction
-    ) {}
+    ) {
+    }
 
     public function register(RegisterRequest $request): JsonResponse
     {

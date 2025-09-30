@@ -9,7 +9,8 @@ readonly class DeleteUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @throws UserNotFoundException

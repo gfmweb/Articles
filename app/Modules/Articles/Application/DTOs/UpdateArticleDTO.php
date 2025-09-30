@@ -2,11 +2,11 @@
 
 namespace App\Modules\Articles\Application\DTOs;
 
-class UpdateArticleDTO
+readonly class UpdateArticleDTO
 {
     public function __construct(
-        public readonly ?string $title = null,
-        public readonly ?string $content = null
+        public ?string $title = null,
+        public ?string $content = null
     ) {}
 
     public static function fromArray(array $data): self

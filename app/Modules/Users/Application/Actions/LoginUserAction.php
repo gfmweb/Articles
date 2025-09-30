@@ -11,7 +11,8 @@ readonly class LoginUserAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    ) {}
+    ) {
+    }
 
     public function execute(LoginUserDTO $dto): ?User
     {

@@ -63,11 +63,6 @@ class Article extends Model
         return (bool) ($this->attributes['is_author'] ?? false);
     }
 
-    public function getHasCommentedAttribute(): bool
-    {
-        return (bool) ($this->attributes['has_commented'] ?? false);
-    }
-
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');

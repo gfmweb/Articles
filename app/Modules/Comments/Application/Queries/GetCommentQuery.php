@@ -10,7 +10,8 @@ readonly class GetCommentQuery
 {
     public function __construct(
         private CommentRepositoryInterface $commentRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @throws CommentNotFoundException

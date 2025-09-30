@@ -22,11 +22,11 @@ class CommentsServiceProvider extends ServiceProvider
     {
         $this->app->bind(CommentRepositoryInterface::class, CommentRepository::class);
 
-        $this->app->singleton(CreateCommentAction::class);
-        $this->app->singleton(UpdateCommentAction::class);
-        $this->app->singleton(DeleteCommentAction::class);
-        $this->app->singleton(GetCommentsByArticleQuery::class);
-        $this->app->singleton(\App\Modules\Comments\Application\Queries\GetCommentQuery::class);
+        $this->app->bind(CreateCommentAction::class);
+        $this->app->bind(UpdateCommentAction::class);
+        $this->app->bind(DeleteCommentAction::class);
+        $this->app->bind(GetCommentsByArticleQuery::class);
+        $this->app->bind(\App\Modules\Comments\Application\Queries\GetCommentQuery::class);
     }
 
     /**
@@ -34,16 +34,12 @@ class CommentsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Load routes
         $this->loadRoutesFrom(__DIR__.'/../Presentation/routes/comments.php');
 
-        // Load translations
         $this->loadTranslationsFrom(
             __DIR__.'/../Persistence/resources/lang',
             'comments'
         );
-
-        // Register policies
         Gate::policy(Comment::class, CommentPolicy::class);
     }
 }

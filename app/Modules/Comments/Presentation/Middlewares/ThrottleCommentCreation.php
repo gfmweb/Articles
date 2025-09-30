@@ -11,7 +11,6 @@ class ThrottleCommentCreation
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // User is guaranteed by auth:sanctum middleware
         $user = $request->user();
         $key = 'comment_creation.'.$user->id;
         $maxAttempts = config('security.rate_limiting.comment_creation_attempts', 1);

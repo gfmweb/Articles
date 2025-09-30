@@ -10,7 +10,8 @@ readonly class CreateCommentAction
 {
     public function __construct(
         private CommentRepositoryInterface $commentRepository
-    ) {}
+    ) {
+    }
 
     public function execute(CreateCommentDTO $dto): Comment
     {

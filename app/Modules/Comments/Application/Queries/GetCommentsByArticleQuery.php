@@ -9,7 +9,8 @@ readonly class GetCommentsByArticleQuery
 {
     public function __construct(
         private CommentRepositoryInterface $commentRepository
-    ) {}
+    ) {
+    }
 
     public function execute(int $articleId): Collection
     {

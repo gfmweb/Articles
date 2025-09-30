@@ -19,7 +19,7 @@ class ThrottleAuth
             $seconds = RateLimiter::availableIn($key);
 
             return response()->json([
-                'message' => __('auth.throttle', ['seconds' => $seconds]),
+                'message' => __('users::messages.auth_throttle', ['seconds' => $seconds]),
                 'retry_after' => $seconds,
             ], 429);
         }

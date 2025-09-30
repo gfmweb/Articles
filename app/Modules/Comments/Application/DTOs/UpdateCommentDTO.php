@@ -6,7 +6,8 @@ readonly class UpdateCommentDTO
 {
     public function __construct(
         public string $text
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

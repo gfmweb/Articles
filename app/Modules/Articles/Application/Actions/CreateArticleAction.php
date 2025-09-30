@@ -6,11 +6,12 @@ use App\Modules\Articles\Application\DTOs\CreateArticleDTO;
 use App\Modules\Articles\Persistence\Interfaces\ArticleRepositoryInterface;
 use App\Modules\Articles\Persistence\ORM\Article;
 
-class CreateArticleAction
+readonly class CreateArticleAction
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository
-    ) {}
+    ) {
+    }
 
     public function execute(CreateArticleDTO $dto): Article
     {

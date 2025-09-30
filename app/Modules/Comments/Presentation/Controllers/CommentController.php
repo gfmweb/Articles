@@ -15,7 +15,7 @@ use App\Modules\Comments\Presentation\Resources\CommentResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 
-class CommentController
+readonly class CommentController
 {
     use AuthorizesRequests;
 
@@ -24,11 +24,10 @@ class CommentController
         private UpdateCommentAction $updateCommentAction,
         private DeleteCommentAction $deleteCommentAction,
         private GetCommentQuery $getCommentQuery
-    ) {}
+    ) {
+    }
 
-    /**
-     * Get comments for a specific article.
-     */
+
     public function index(int $articleId): JsonResponse
     {
         $comments = Comment::with('author')
@@ -41,9 +40,6 @@ class CommentController
             ->setStatusCode(200);
     }
 
-    /**
-     * Store a newly created comment.
-     */
     public function store(CreateCommentRequest $request, int $articleId): JsonResponse
     {
         $data = $request->validated();
@@ -60,9 +56,6 @@ class CommentController
             ->setStatusCode(201);
     }
 
-    /**
-     * Update the specified comment.
-     */
     public function update(UpdateCommentRequest $request, int $id): JsonResponse
     {
         $comment = $this->getCommentQuery->execute($id);
@@ -78,9 +71,6 @@ class CommentController
             ->setStatusCode(200);
     }
 
-    /**
-     * Remove the specified comment.
-     */
     public function destroy(int $id): JsonResponse
     {
         $comment = $this->getCommentQuery->execute($id);

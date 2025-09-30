@@ -8,7 +8,8 @@ readonly class CreateCommentDTO
         public int $article_id,
         public int $author_id,
         public string $text
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

@@ -19,25 +19,21 @@ class ArticlesServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ArticleRepositoryInterface::class, ArticleRepository::class);
-        $this->app->singleton(CreateArticleAction::class);
-        $this->app->singleton(UpdateArticleAction::class);
-        $this->app->singleton(DeleteArticleAction::class);
-        $this->app->singleton(GetArticleQuery::class);
-        $this->app->singleton(GetArticlesQuery::class);
+        $this->app->bind(CreateArticleAction::class);
+        $this->app->bind(UpdateArticleAction::class);
+        $this->app->bind(DeleteArticleAction::class);
+        $this->app->bind(GetArticleQuery::class);
+        $this->app->bind(GetArticlesQuery::class);
     }
 
     public function boot(): void
     {
-        // Load routes
-        $this->loadRoutesFrom(__DIR__.'/../Presentation/routes/articles.php');
 
-        // Load translations
+        $this->loadRoutesFrom(__DIR__.'/../Presentation/routes/articles.php');
         $this->loadTranslationsFrom(
             __DIR__.'/../Persistence/resources/lang',
             'articles'
         );
-
-        // Register policies
         Gate::policy(Article::class, ArticlePolicy::class);
     }
 }

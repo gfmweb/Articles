@@ -6,8 +6,11 @@ use App\Modules\Comments\Application\Actions\CreateCommentAction;
 use App\Modules\Comments\Application\Actions\DeleteCommentAction;
 use App\Modules\Comments\Application\Actions\UpdateCommentAction;
 use App\Modules\Comments\Application\Queries\GetCommentsByArticleQuery;
+use App\Modules\Comments\Domain\Policies\CommentPolicy;
 use App\Modules\Comments\Infrastructure\Repositories\CommentRepository;
 use App\Modules\Comments\Persistence\Interfaces\CommentRepositoryInterface;
+use App\Modules\Comments\Persistence\ORM\Comment;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class CommentsServiceProvider extends ServiceProvider
@@ -23,6 +26,7 @@ class CommentsServiceProvider extends ServiceProvider
         $this->app->singleton(UpdateCommentAction::class);
         $this->app->singleton(DeleteCommentAction::class);
         $this->app->singleton(GetCommentsByArticleQuery::class);
+        $this->app->singleton(\App\Modules\Comments\Application\Queries\GetCommentQuery::class);
     }
 
     /**
@@ -38,5 +42,8 @@ class CommentsServiceProvider extends ServiceProvider
             __DIR__.'/../Persistence/resources/lang',
             'comments'
         );
+
+        // Register policies
+        Gate::policy(Comment::class, CommentPolicy::class);
     }
 }

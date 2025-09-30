@@ -28,7 +28,7 @@ class UpdateCommentRequest extends FormRequest
                 'string',
                 'min:1',
                 'max:1000',
-                new NoHtmlTags(),
+                new NoHtmlTags,
             ],
         ];
     }

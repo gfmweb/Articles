@@ -7,8 +7,11 @@ use App\Modules\Articles\Application\Actions\DeleteArticleAction;
 use App\Modules\Articles\Application\Actions\UpdateArticleAction;
 use App\Modules\Articles\Application\Queries\GetArticleQuery;
 use App\Modules\Articles\Application\Queries\GetArticlesQuery;
+use App\Modules\Articles\Domain\Policies\ArticlePolicy;
 use App\Modules\Articles\Infrastructure\Repositories\ArticleRepository;
 use App\Modules\Articles\Persistence\Interfaces\ArticleRepositoryInterface;
+use App\Modules\Articles\Persistence\ORM\Article;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class ArticlesServiceProvider extends ServiceProvider
@@ -33,5 +36,8 @@ class ArticlesServiceProvider extends ServiceProvider
             __DIR__.'/../Persistence/resources/lang',
             'articles'
         );
+
+        // Register policies
+        Gate::policy(Article::class, ArticlePolicy::class);
     }
 }

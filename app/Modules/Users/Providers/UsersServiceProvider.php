@@ -20,36 +20,15 @@ class UsersServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
-        $this->app->singleton(CreateUserAction::class, function ($app) {
-            return new CreateUserAction($app->make(UserRepositoryInterface::class));
-        });
-
-        $this->app->singleton(UpdateUserAction::class, function ($app) {
-            return new UpdateUserAction($app->make(UserRepositoryInterface::class));
-        });
-
-        $this->app->singleton(DeleteUserAction::class, function ($app) {
-            return new DeleteUserAction($app->make(UserRepositoryInterface::class));
-        });
-
-        $this->app->singleton(RegisterUserAction::class, function ($app) {
-            return new RegisterUserAction($app->make(UserRepositoryInterface::class));
-        });
-
-        $this->app->singleton(LoginUserAction::class, function ($app) {
-            return new LoginUserAction($app->make(UserRepositoryInterface::class));
-        });
-
-        $this->app->singleton(GetUserQuery::class, function ($app) {
-            return new GetUserQuery($app->make(UserRepositoryInterface::class));
-        });
-
-        $this->app->singleton(GetUsersQuery::class, function ($app) {
-            return new GetUsersQuery($app->make(UserRepositoryInterface::class));
-        });
+        $this->app->singleton(CreateUserAction::class);
+        $this->app->singleton(UpdateUserAction::class);
+        $this->app->singleton(DeleteUserAction::class);
+        $this->app->singleton(RegisterUserAction::class);
+        $this->app->singleton(LoginUserAction::class);
+        $this->app->singleton(GetUserQuery::class);
+        $this->app->singleton(GetUsersQuery::class);
     }
 
     /**

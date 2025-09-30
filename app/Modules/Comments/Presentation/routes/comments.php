@@ -22,6 +22,7 @@ Route::prefix('api')->group(function () {
         Route::post('articles/{articleId}/comments', [CommentController::class, 'store']);
     });
 
+    // Route model binding не используем здесь, т.к. используем GetCommentQuery для получения комментария
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('comments/{id}', [CommentController::class, 'update']);
         Route::delete('comments/{id}', [CommentController::class, 'destroy']);

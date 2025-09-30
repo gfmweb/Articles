@@ -15,7 +15,7 @@ readonly class UpdateCommentAction
     public function execute(Comment $comment, UpdateCommentDTO $dto): Comment
     {
         return $this->commentRepository->update($comment, [
-            'text' => $dto->text
+            'text' => $dto->text,
         ]);
     }
 }

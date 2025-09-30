@@ -2,6 +2,7 @@
 
 namespace App\Modules\Users\Application\Actions;
 
+use App\Modules\Users\Domain\Exceptions\UserNotFoundException;
 use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 
 readonly class DeleteUserAction
@@ -11,14 +12,14 @@ readonly class DeleteUserAction
     ) {}
 
     /**
-     * @throws \Exception
+     * @throws UserNotFoundException
      */
     public function execute(int $userId): bool
     {
         $user = $this->userRepository->findById($userId);
 
         if (! $user) {
-            throw new \Exception(__('users::messages.not_found'));
+            throw new UserNotFoundException;
         }
 
         return $this->userRepository->delete($user);

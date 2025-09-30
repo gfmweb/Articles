@@ -100,7 +100,7 @@ class ArticleSeeder extends Seeder
                     'Дальнейшие исследования помогут более глубоко понять суть происходящих процессов и найти наиболее эффективные способы решения поставленных задач.',
                 ];
 
-                $content .= "\n\n" . $additionalParagraphs[array_rand($additionalParagraphs)];
+                $content .= "\n\n".$additionalParagraphs[array_rand($additionalParagraphs)];
 
                 Article::create([
                     'title' => $title,

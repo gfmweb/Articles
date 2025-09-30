@@ -7,17 +7,23 @@ use App\Modules\Comments\Application\Actions\DeleteCommentAction;
 use App\Modules\Comments\Application\Actions\UpdateCommentAction;
 use App\Modules\Comments\Application\DTOs\CreateCommentDTO;
 use App\Modules\Comments\Application\DTOs\UpdateCommentDTO;
+use App\Modules\Comments\Application\Queries\GetCommentQuery;
+use App\Modules\Comments\Persistence\ORM\Comment;
 use App\Modules\Comments\Presentation\Requests\CreateCommentRequest;
 use App\Modules\Comments\Presentation\Requests\UpdateCommentRequest;
-use App\Modules\Comments\Persistence\ORM\Comment;
+use App\Modules\Comments\Presentation\Resources\CommentResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 
 class CommentController
 {
+    use AuthorizesRequests;
+
     public function __construct(
         private CreateCommentAction $createCommentAction,
         private UpdateCommentAction $updateCommentAction,
-        private DeleteCommentAction $deleteCommentAction
+        private DeleteCommentAction $deleteCommentAction,
+        private GetCommentQuery $getCommentQuery
     ) {}
 
     /**
@@ -30,9 +36,9 @@ class CommentController
             ->orderBy('created_at', 'asc')
             ->get();
 
-        return response()->json([
-            'data' => $comments,
-        ]);
+        return CommentResource::collection($comments)
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
@@ -46,11 +52,12 @@ class CommentController
 
         $dto = CreateCommentDTO::fromArray($data);
         $comment = $this->createCommentAction->execute($dto);
+        $comment->load(['author']);
 
-        return response()->json([
-            'data' => $comment->load(['author']),
-            'message' => __('comments::messages.created'),
-        ], 201);
+        return (new CommentResource($comment))
+            ->additional(['message' => __('comments::messages.created')])
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -58,20 +65,17 @@ class CommentController
      */
     public function update(UpdateCommentRequest $request, int $id): JsonResponse
     {
-        $comment = Comment::findOrFail($id);
-
-        // Проверяем, что пользователь является автором комментария
-        if ($request->user()->id !== $comment->author_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $comment = $this->getCommentQuery->execute($id);
+        $this->authorize('update', $comment);
 
         $dto = UpdateCommentDTO::fromArray($request->validated());
         $updatedComment = $this->updateCommentAction->execute($comment, $dto);
+        $updatedComment->load(['author']);
 
-        return response()->json([
-            'data' => $updatedComment->load(['author']),
-            'message' => __('comments::messages.updated'),
-        ]);
+        return (new CommentResource($updatedComment))
+            ->additional(['message' => __('comments::messages.updated')])
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
@@ -79,12 +83,8 @@ class CommentController
      */
     public function destroy(int $id): JsonResponse
     {
-        $comment = Comment::findOrFail($id);
-
-        // Проверяем, что пользователь является автором комментария
-        if (request()->user()->id !== $comment->author_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $comment = $this->getCommentQuery->execute($id);
+        $this->authorize('delete', $comment);
 
         $this->deleteCommentAction->execute($comment);
 

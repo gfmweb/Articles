@@ -52,14 +52,24 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the articles for the user.
+     * Note: This creates a coupling between modules. Consider using events/listeners
+     * or a shared contract if strict module isolation is required.
+     */
     public function articles(): HasMany
     {
-        return $this->hasMany(\App\Modules\Articles\Persistence\ORM\Article::class, 'author_id');
+        return $this->hasMany('App\Modules\Articles\Persistence\ORM\Article', 'author_id');
     }
 
+    /**
+     * Get the comments for the user.
+     * Note: This creates a coupling between modules. Consider using events/listeners
+     * or a shared contract if strict module isolation is required.
+     */
     public function comments(): HasMany
     {
-        return $this->hasMany(\App\Modules\Comments\Persistence\ORM\Comment::class, 'author_id');
+        return $this->hasMany('App\Modules\Comments\Persistence\ORM\Comment', 'author_id');
     }
 
     protected static function newFactory(): UserFactory

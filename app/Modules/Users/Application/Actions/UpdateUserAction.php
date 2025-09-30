@@ -3,6 +3,8 @@
 namespace App\Modules\Users\Application\Actions;
 
 use App\Modules\Users\Application\DTOs\UpdateUserDTO;
+use App\Modules\Users\Domain\Exceptions\UserAlreadyExistsException;
+use App\Modules\Users\Domain\Exceptions\UserNotFoundException;
 use App\Modules\Users\Persistence\Interfaces\UserRepositoryInterface;
 use App\Modules\Users\Persistence\ORM\User;
 use Illuminate\Support\Facades\Hash;
@@ -14,21 +16,22 @@ readonly class UpdateUserAction
     ) {}
 
     /**
-     * @throws \Exception
+     * @throws UserNotFoundException
+     * @throws UserAlreadyExistsException
      */
     public function execute(UpdateUserDTO $dto): User
     {
         $user = $this->userRepository->findById($dto->id);
 
         if (! $user) {
-            throw new \Exception(__('users::messages.not_found'));
+            throw new UserNotFoundException;
         }
 
         if ($dto->email && $dto->email !== $user->email) {
             $existingUser = $this->userRepository->findByEmail($dto->email);
 
             if ($existingUser) {
-                throw new \Exception(__('users::messages.email_exists'));
+                throw new UserAlreadyExistsException($dto->email);
             }
         }
         $data = $dto->toArray();

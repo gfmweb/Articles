@@ -8,6 +8,7 @@ use App\Modules\Users\Application\DTOs\LoginUserDTO;
 use App\Modules\Users\Application\DTOs\RegisterUserDTO;
 use App\Modules\Users\Presentation\Requests\LoginRequest;
 use App\Modules\Users\Presentation\Requests\RegisterRequest;
+use App\Modules\Users\Presentation\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,7 @@ readonly class AuthController
 
         return response()->json([
             'data' => [
-                'user' => $user,
+                'user' => new UserResource($user),
                 'token' => $token,
             ],
             'message' => __('users::messages.registered'),
@@ -49,7 +50,7 @@ readonly class AuthController
 
         return response()->json([
             'data' => [
-                'user' => $user,
+                'user' => new UserResource($user),
                 'token' => $token,
             ],
             'message' => __('users::messages.logged_in'),
@@ -68,7 +69,7 @@ readonly class AuthController
     public function me(Request $request): JsonResponse
     {
         return response()->json([
-            'data' => $request->user(),
+            'data' => new UserResource($request->user()),
         ]);
     }
 }

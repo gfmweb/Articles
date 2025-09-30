@@ -13,8 +13,8 @@ Route::prefix('api')->group(function () {
         Route::post('articles', [ArticleController::class, 'store']);
     });
 
-    Route::middleware(['auth:sanctum', 'article.owner'])->group(function () {
-        Route::put('articles/{id}', [ArticleController::class, 'update']);
-        Route::delete('articles/{id}', [ArticleController::class, 'destroy']);
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::put('articles/{article}', [ArticleController::class, 'update']);
+        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
     });
 });

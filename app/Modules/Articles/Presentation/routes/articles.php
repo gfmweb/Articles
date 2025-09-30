@@ -14,7 +14,7 @@ Route::prefix('api')->group(function () {
     });
 
     Route::middleware(['auth:sanctum', 'article.owner'])->group(function () {
-        Route::put('articles/{article}', [ArticleController::class, 'update']);
-        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
+        Route::put('articles/{id}', [ArticleController::class, 'update']);
+        Route::delete('articles/{id}', [ArticleController::class, 'destroy']);
     });
 });

@@ -24,11 +24,22 @@ class ArticleRepository implements ArticleRepositoryInterface
         return Article::with(['comments.author', 'author'])->find($id);
     }
 
-    public function getAllPaginated(int $perPage = 15): LengthAwarePaginator
+    public function getAllPaginated(int $perPage = 15, ?int $userId = null): LengthAwarePaginator
     {
-        return Article::with(['author'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $query = Article::with(['author'])
+            ->withCount('comments')
+            ->orderBy('created_at', 'desc');
+
+        if ($userId) {
+            $query->addSelect(['*'])
+                ->selectRaw('(author_id = ?) as is_author', [$userId])
+                ->selectRaw(
+                    '(SELECT COUNT(*) > 0 FROM comments WHERE comments.article_id = articles.id AND comments.author_id = ?) as has_commented',
+                    [$userId]
+                );
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**
@@ -36,7 +47,10 @@ class ArticleRepository implements ArticleRepositoryInterface
      */
     public function getAll(): Collection
     {
-        return Article::with(['author'])->orderBy('created_at', 'desc')->get();
+        return Article::with(['author'])
+            ->withCount('comments')
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function update(Article $article, array $data): Article

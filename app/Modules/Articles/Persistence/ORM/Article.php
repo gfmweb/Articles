@@ -20,6 +20,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon $updated_at
  * @property-read User $author
  * @property-read Collection $comments
+ * @property-read int $comments_count
+ * @property-read bool $is_author
+ * @property-read bool $has_commented
  */
 class Article extends Model
 {
@@ -35,6 +38,14 @@ class Article extends Model
     ];
 
     /**
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'is_author',
+        'has_commented',
+    ];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
@@ -42,7 +53,19 @@ class Article extends Model
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'is_author' => 'boolean',
+            'has_commented' => 'boolean',
         ];
+    }
+
+    public function getIsAuthorAttribute(): bool
+    {
+        return (bool) ($this->attributes['is_author'] ?? false);
+    }
+
+    public function getHasCommentedAttribute(): bool
+    {
+        return (bool) ($this->attributes['has_commented'] ?? false);
     }
 
     public function author(): BelongsTo

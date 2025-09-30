@@ -27,7 +27,17 @@ readonly class ArticleController
     public function index(Request $request): JsonResponse
     {
         $perPage = $request->get('per_page', 15);
-        $articles = $this->getArticlesQuery->execute($perPage);
+        // Получаем ID пользователя из токена, если он есть
+        $userId = null;
+        if ($request->hasHeader('Authorization')) {
+            $token = str_replace('Bearer ', '', $request->header('Authorization'));
+            $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+            if ($personalAccessToken) {
+                $userId = $personalAccessToken->tokenable_id;
+            }
+        }
+
+        $articles = $this->getArticlesQuery->execute($perPage, $userId);
 
         return response()->json([
             'data' => $articles->items(),
@@ -60,9 +70,15 @@ readonly class ArticleController
         ]);
     }
 
-    public function update(UpdateArticleRequest $request): JsonResponse
+    public function update(UpdateArticleRequest $request, int $id): JsonResponse
     {
-        $article = $request->get('article');
+        $article = \App\Modules\Articles\Persistence\ORM\Article::findOrFail($id);
+
+        // Проверяем, что пользователь является автором статьи
+        if ($request->user()->id !== $article->author_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $dto = UpdateArticleDTO::fromArray($request->validated());
         $updatedArticle = $this->updateArticleAction->execute($article, $dto);
 
@@ -72,9 +88,15 @@ readonly class ArticleController
         ]);
     }
 
-    public function destroy(): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $article = request()->get('article');
+        $article = \App\Modules\Articles\Persistence\ORM\Article::findOrFail($id);
+
+        // Проверяем, что пользователь является автором статьи
+        if (request()->user()->id !== $article->author_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $this->deleteArticleAction->execute($article);
 
         return response()->json([

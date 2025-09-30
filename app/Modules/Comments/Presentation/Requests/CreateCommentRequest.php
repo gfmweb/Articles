@@ -24,7 +24,6 @@ class CreateCommentRequest extends FormRequest
     {
         return [
             'text' => ['required', 'string', 'max:2000', new NoHtmlTags],
-            'author_id' => 'required|integer|exists:users,id',
         ];
     }
 
@@ -37,8 +36,6 @@ class CreateCommentRequest extends FormRequest
     {
         return [
             'text.required' => __('comments::validation.text_required'),
-            'author_id.required' => __('comments::validation.author_required'),
-            'author_id.exists' => __('comments::validation.author_exists'),
         ];
     }
 }

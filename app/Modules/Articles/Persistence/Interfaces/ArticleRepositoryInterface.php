@@ -14,7 +14,7 @@ interface ArticleRepositoryInterface
 
     public function findByIdWithComments(int $id): ?Article;
 
-    public function getAllPaginated(int $perPage = 15): LengthAwarePaginator;
+    public function getAllPaginated(int $perPage = 15, ?int $userId = null): LengthAwarePaginator;
 
     public function getAll(): Collection;
 

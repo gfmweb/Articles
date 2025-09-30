@@ -11,8 +11,8 @@ class GetArticlesQuery
         private readonly ArticleRepositoryInterface $articleRepository
     ) {}
 
-    public function execute(int $perPage = 15): LengthAwarePaginator
+    public function execute(int $perPage = 15, ?int $userId = null): LengthAwarePaginator
     {
-        return $this->articleRepository->getAllPaginated($perPage);
+        return $this->articleRepository->getAllPaginated($perPage, $userId);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Modules\Users\Persistence\ORM;
 
 use App\Modules\Users\Persistence\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -49,6 +50,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function articles(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Articles\Persistence\ORM\Article::class, 'author_id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Comments\Persistence\ORM\Comment::class, 'author_id');
     }
 
     protected static function newFactory(): UserFactory

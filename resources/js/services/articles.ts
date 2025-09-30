@@ -47,5 +47,10 @@ export const articlesService = {
 
     async deleteArticle(id: number): Promise<void> {
         await api.delete(`/articles/${id}`)
+    },
+
+    async createArticle(data: { title: string; content: string }): Promise<{ data: Article }> {
+        const response = await api.post('/articles', data)
+        return response.data
     }
 }

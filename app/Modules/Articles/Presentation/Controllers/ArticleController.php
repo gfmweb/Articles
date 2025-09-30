@@ -35,6 +35,17 @@ readonly class ArticleController
         $perPage = $request->get('per_page', 15);
         $userId = $request->user()?->id;
 
+        // Если пользователь не аутентифицирован через middleware, попробуем получить из токена
+        if (!$userId && $request->bearerToken()) {
+            try {
+                $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
+                $userId = $user?->id;
+            } catch (\Exception $e) {
+                // Игнорируем ошибки
+            }
+        }
+
+
         $articles = $this->getArticlesQuery->execute($perPage, $userId);
 
         return (new ArticleCollection($articles))
@@ -48,28 +59,59 @@ readonly class ArticleController
         $article = $this->createArticleAction->execute($dto);
         $article->load(['author']);
 
+        // Добавляем поля для подсветки
+        $article->setAttribute('is_author', true);
+        $article->setAttribute('has_commented', false);
+
         return (new ArticleResource($article))
             ->additional(['message' => __('articles::messages.created')])
             ->response()
             ->setStatusCode(201);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
-        $article = $this->getArticleQuery->execute($id);
+        $userId = $request->user()?->id;
+        $article = $this->getArticleQuery->execute($id, $userId);
 
         return (new ArticleResource($article))
             ->response()
             ->setStatusCode(200);
     }
 
-    public function update(UpdateArticleRequest $request, Article $article): JsonResponse
+    public function update(UpdateArticleRequest $request, int $id): JsonResponse
     {
-        $this->authorize('update', $article);
+        $userId = $request->user()?->id;
+
+        // Если пользователь не аутентифицирован через middleware, попробуем получить из токена
+        if (!$userId && $request->bearerToken()) {
+            try {
+                $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
+                $userId = $user?->id;
+            } catch (\Exception $e) {
+                // Игнорируем ошибки
+            }
+        }
+
+        // Получаем статью по ID
+        $article = $this->getArticleQuery->execute($id);
+
+        if (!$article) {
+            return response()->json(['message' => 'Article not found.'], 404);
+        }
+
+        // Проверяем, что пользователь авторизован и является автором статьи
+        if (!$userId || $article->author_id !== $userId) {
+            return response()->json(['message' => 'This action is unauthorized.'], 403);
+        }
 
         $dto = UpdateArticleDTO::fromArray($request->validated());
         $updatedArticle = $this->updateArticleAction->execute($article, $dto);
         $updatedArticle->load(['author']);
+
+        // Добавляем поля для подсветки
+        $updatedArticle->setAttribute('is_author', true);
+        $updatedArticle->setAttribute('has_commented', false);
 
         return (new ArticleResource($updatedArticle))
             ->additional(['message' => __('articles::messages.updated')])
@@ -77,9 +119,31 @@ readonly class ArticleController
             ->setStatusCode(200);
     }
 
-    public function destroy(Article $article): JsonResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
-        $this->authorize('delete', $article);
+        $userId = $request->user()?->id;
+
+        // Если пользователь не аутентифицирован через middleware, попробуем получить из токена
+        if (!$userId && $request->bearerToken()) {
+            try {
+                $user = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
+                $userId = $user?->id;
+            } catch (\Exception $e) {
+                // Игнорируем ошибки
+            }
+        }
+
+        // Получаем статью по ID
+        $article = $this->getArticleQuery->execute($id);
+
+        if (!$article) {
+            return response()->json(['message' => 'Article not found.'], 404);
+        }
+
+        // Проверяем, что пользователь авторизован и является автором статьи
+        if (!$userId || $article->author_id !== $userId) {
+            return response()->json(['message' => 'This action is unauthorized.'], 403);
+        }
 
         $this->deleteArticleAction->execute($article);
 

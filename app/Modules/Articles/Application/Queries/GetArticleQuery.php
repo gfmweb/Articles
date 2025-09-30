@@ -11,8 +11,16 @@ class GetArticleQuery
         private readonly ArticleRepositoryInterface $articleRepository
     ) {}
 
-    public function execute(int $id): ?Article
+    public function execute(int $id, ?int $userId = null): ?Article
     {
-        return $this->articleRepository->findByIdWithComments($id);
+        $article = $this->articleRepository->findByIdWithComments($id);
+
+        if ($article && $userId) {
+            // Добавляем поля для подсветки
+            $article->setAttribute('is_author', $article->author_id === $userId);
+            $article->setAttribute('has_commented', $article->comments->where('author_id', $userId)->isNotEmpty());
+        }
+
+        return $article;
     }
 }

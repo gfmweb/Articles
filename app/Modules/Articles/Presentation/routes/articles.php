@@ -4,7 +4,7 @@ use App\Modules\Articles\Presentation\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
-    // Public routes
+    // Public routes (with optional auth for highlighting)
     Route::get('articles', [ArticleController::class, 'index']);
     Route::get('articles/{id}', [ArticleController::class, 'show']);
 
@@ -13,8 +13,7 @@ Route::prefix('api')->group(function () {
         Route::post('articles', [ArticleController::class, 'store']);
     });
 
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::put('articles/{article}', [ArticleController::class, 'update']);
-        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
-    });
+    // Routes with manual auth handling
+    Route::put('articles/{article}', [ArticleController::class, 'update']);
+    Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 });

@@ -26,20 +26,25 @@ class ArticleRepository implements ArticleRepositoryInterface
 
     public function getAllPaginated(int $perPage = 15, ?int $userId = null): LengthAwarePaginator
     {
-        $query = Article::with(['author'])
+        $query = Article::with(['author', 'comments'])
             ->withCount('comments')
             ->orderBy('created_at', 'desc');
 
+        $paginator = $query->paginate($perPage);
+
+        // Добавляем поля подсветки
         if ($userId) {
-            $query->addSelect(['*'])
-                ->selectRaw('(author_id = ?) as is_author', [$userId])
-                ->selectRaw(
-                    '(SELECT COUNT(*) > 0 FROM comments WHERE comments.article_id = articles.id AND comments.author_id = ?) as has_commented',
-                    [$userId]
-                );
+            $paginator->getCollection()->each(function ($article) use ($userId) {
+                $isAuthor = $article->author_id === $userId;
+                $hasCommented = $article->comments->where('author_id', $userId)->isNotEmpty();
+
+                // Используем setAttribute для установки значений
+                $article->setAttribute('is_author', $isAuthor);
+                $article->setAttribute('has_commented', $hasCommented);
+            });
         }
 
-        return $query->paginate($perPage);
+        return $paginator;
     }
 
     /**

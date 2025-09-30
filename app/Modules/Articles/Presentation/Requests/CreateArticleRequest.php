@@ -38,8 +38,16 @@ class CreateArticleRequest extends FormRequest
             'title.required' => __('articles::validation.title_required'),
             'title.max' => __('articles::validation.title_max'),
             'content.required' => __('articles::validation.content_required'),
-            'author_id.required' => __('articles::validation.author_required'),
-            'author_id.exists' => __('articles::validation.author_exists'),
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'author_id' => $this->user()->id,
+        ]);
     }
 }

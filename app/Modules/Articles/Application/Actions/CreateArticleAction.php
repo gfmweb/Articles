@@ -14,10 +14,16 @@ class CreateArticleAction
 
     public function execute(CreateArticleDTO $dto): Article
     {
-        return $this->articleRepository->create([
+        $article = $this->articleRepository->create([
             'title' => $dto->title,
             'content' => $dto->content,
             'author_id' => $dto->author_id,
         ]);
+
+        // Добавляем поля для подсветки
+        $article->setAttribute('is_author', true);
+        $article->setAttribute('has_commented', false);
+
+        return $article;
     }
 }

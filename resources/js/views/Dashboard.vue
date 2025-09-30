@@ -19,10 +19,16 @@
           <div class="articles-section">
             <a-row :gutter="[16, 16]">
               <a-col :span="24">
-                <h2 class="section-title">
-                  <FileTextOutlined />
-                  Статьи
-                </h2>
+                <div class="section-header">
+                  <h2 class="section-title">
+                    <FileTextOutlined />
+                    Статьи
+                  </h2>
+                  <a-button type="primary" @click="handleCreateArticle" class="create-article-btn">
+                    <PlusOutlined />
+                    Создать статью
+                  </a-button>
+                </div>
                 <div class="legend">
                   <a-tag color="green" class="legend-item">
                     <EditOutlined />
@@ -141,6 +147,12 @@
       @article-deleted="handleArticleDeleted"
       @comment-deleted="handleCommentDeleted"
     />
+
+    <!-- Модальное окно для создания статьи -->
+    <CreateArticleModal
+      v-model:visible="createModalVisible"
+      @article-created="handleArticleCreated"
+    />
   </div>
 </template>
 
@@ -151,6 +163,7 @@ import { useAuthStore } from '../stores/auth'
 import { message } from 'ant-design-vue'
 import { articlesService, type Article } from '../services/articles'
 import ArticleModal from '../components/ArticleModal.vue'
+import CreateArticleModal from '../components/CreateArticleModal.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -165,6 +178,9 @@ const perPage = ref(12)
 // Состояние для модального окна
 const selectedArticleId = ref<number | null>(null)
 const modalVisible = ref(false)
+
+// Состояние для модального окна создания статьи
+const createModalVisible = ref(false)
 
 // Загрузка статей
 const loadArticles = async (page: number = 1) => {
@@ -219,6 +235,16 @@ const handleArticleDeleted = () => {
 
 // Обработка удаления комментария
 const handleCommentDeleted = () => {
+  loadArticles(currentPage.value)
+}
+
+// Обработка создания статьи
+const handleCreateArticle = () => {
+  createModalVisible.value = true
+}
+
+// Обработка успешного создания статьи
+const handleArticleCreated = () => {
   loadArticles(currentPage.value)
 }
 
@@ -296,14 +322,40 @@ onMounted(() => {
   margin-top: 24px;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .section-title {
   font-size: 24px;
   font-weight: 600;
   color: #262626;
-  margin-bottom: 16px;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.create-article-btn {
+  height: 40px;
+  padding: 0 20px;
+  font-weight: 500;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.create-article-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
 }
 
 .legend {
@@ -489,8 +541,19 @@ onMounted(() => {
 
 /* Адаптивность */
 @media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
   .section-title {
     font-size: 20px;
+  }
+
+  .create-article-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .article-card {

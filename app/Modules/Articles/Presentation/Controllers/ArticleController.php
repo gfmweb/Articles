@@ -3,13 +3,13 @@
 namespace App\Modules\Articles\Presentation\Controllers;
 
 use App\Modules\Articles\Application\Actions\CreateArticleAction;
-use App\Modules\Articles\Application\Actions\DeleteArticleAction;
-use App\Modules\Articles\Application\Actions\UpdateArticleAction;
+use App\Modules\Articles\Application\Actions\DeleteArticleWithAuthorizationAction;
+use App\Modules\Articles\Application\Actions\UpdateArticleWithAuthorizationAction;
 use App\Modules\Articles\Application\DTOs\CreateArticleDTO;
 use App\Modules\Articles\Application\DTOs\UpdateArticleDTO;
 use App\Modules\Articles\Application\Queries\GetArticleQuery;
 use App\Modules\Articles\Application\Queries\GetArticlesQuery;
-use App\Modules\Articles\Persistence\ORM\Article;
+use App\Modules\Articles\Application\Services\ArticleEnricherService;
 use App\Modules\Articles\Presentation\Requests\CreateArticleRequest;
 use App\Modules\Articles\Presentation\Requests\UpdateArticleRequest;
 use App\Modules\Articles\Presentation\Resources\ArticleCollection;
@@ -26,8 +26,9 @@ readonly class ArticleController
         private GetArticlesQuery $getArticlesQuery,
         private GetArticleQuery $getArticleQuery,
         private CreateArticleAction $createArticleAction,
-        private UpdateArticleAction $updateArticleAction,
-        private DeleteArticleAction $deleteArticleAction
+        private UpdateArticleWithAuthorizationAction $updateArticleWithAuthorizationAction,
+        private DeleteArticleWithAuthorizationAction $deleteArticleWithAuthorizationAction,
+        private ArticleEnricherService $enricherService
     ) {
     }
 
@@ -48,7 +49,7 @@ readonly class ArticleController
         $dto = CreateArticleDTO::fromArray($request->validated());
         $article = $this->createArticleAction->execute($dto);
         $article->load(['author']);
-        $this->addHighlightFields($article, $request->user()->id);
+        $this->enricherService->enrichArticle($article, $request->user()->id);
 
         return (new ArticleResource($article))
             ->additional(['message' => __('articles::messages.created')])
@@ -74,20 +75,8 @@ readonly class ArticleController
             return response()->json(['message' => __('articles::messages.unauthenticated')], 401);
         }
 
-        $article = $this->getArticleQuery->execute($id);
-
-        if (! $article) {
-            return response()->json(['message' => __('articles::messages.not_found')], 404);
-        }
-
-        if ($article->author_id !== $userId) {
-            return response()->json(['message' => __('articles::messages.unauthorized')], 403);
-        }
-
         $dto = UpdateArticleDTO::fromArray($request->validated());
-        $updatedArticle = $this->updateArticleAction->execute($article, $dto);
-        $updatedArticle->load(['author']);
-        $this->addHighlightFields($updatedArticle, $userId);
+        $updatedArticle = $this->updateArticleWithAuthorizationAction->execute($id, $dto, $userId);
 
         return (new ArticleResource($updatedArticle))
             ->additional(['message' => __('articles::messages.updated')])
@@ -102,26 +91,11 @@ readonly class ArticleController
         if (! $userId) {
             return response()->json(['message' => __('articles::messages.unauthenticated')], 401);
         }
-        $article = $this->getArticleQuery->execute($id);
 
-        if (! $article) {
-            return response()->json(['message' => __('articles::messages.not_found')], 404);
-        }
-
-        if ($article->author_id !== $userId) {
-            return response()->json(['message' => __('articles::messages.unauthorized')], 403);
-        }
-
-        $this->deleteArticleAction->execute($article);
+        $this->deleteArticleWithAuthorizationAction->execute($id, $userId);
 
         return response()->json([
             'message' => __('articles::messages.deleted'),
         ]);
-    }
-
-    private function addHighlightFields(Article $article, int $userId): void
-    {
-        $article->setAttribute('is_author', $article->author_id === $userId);
-        $article->setAttribute('has_commented', false);
     }
 }
